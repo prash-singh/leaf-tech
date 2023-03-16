@@ -26,15 +26,18 @@ class _HomePageState extends State<HomePage> {
     (num == 0) ? _docType = "Leaf Smut" : _docType = "Rice Brown Spot";
     var tempInfo = "";
     List tempPrecaution = [], tempPesticides = [];
-    var db = await FirebaseFirestore.instance
-        .collection("Rice Leaf")
-        .doc(_docType)
-        .get();
+    var collection = FirebaseFirestore.instance
+        .collection("Rice Leaf");
+    var db = await collection.doc(_docType).get();
     if (db.exists) {
       Map<String, dynamic>? data = db.data();
       tempInfo = data?['Information'];
       tempPrecaution = data?['Precaution'];
       tempPesticides = data?['Pesticides'];
+    }else{
+      tempInfo = "No data";
+      tempPrecaution = ["No data"];
+      tempPesticides = ["No data"];
     }
 
     setState(() {
@@ -46,7 +49,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  _openGallary() async {
+  _openGallery() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     final imageTemp = File(image!.path);
     setState(() {
@@ -117,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                   GestureDetector(
                     child: const Text("Gallery"),
                     onTap: () {
-                      _openGallary();
+                      _openGallery();
                     },
                   ),
                   const Padding(
